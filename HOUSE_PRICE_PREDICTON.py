@@ -212,7 +212,7 @@ plt.show()
 # Analysis of Outlier
 ######################################
 
-# Aykırı değerlerin baskılanması
+# Suppression of outliers
 def outlier_thresholds(dataframe, variable, low_quantile=0.10, up_quantile=0.90):
     quantile_one = dataframe[variable].quantile(low_quantile)
     quantile_three = dataframe[variable].quantile(up_quantile)
@@ -221,7 +221,7 @@ def outlier_thresholds(dataframe, variable, low_quantile=0.10, up_quantile=0.90)
     low_limit = quantile_one - 1.5 * interquantile_range
     return low_limit, up_limit
 
-# Aykırı değer kontrolü
+# Check of outlier
 def check_outlier(dataframe, col_name):
     low_limit, up_limit = outlier_thresholds(dataframe, col_name)
     if dataframe[(dataframe[col_name] > up_limit) | (dataframe[col_name] < low_limit)].any(axis=None):
@@ -235,7 +235,7 @@ for col in num_cols:
       print(col, check_outlier(df, col))
 
 
-# Aykırı değerlerin baskılanması
+# Suppression of outliers
 def replace_with_thresholds(dataframe, variable):
     low_limit, up_limit = outlier_thresholds(dataframe, variable)
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
@@ -249,7 +249,7 @@ for col in num_cols:
 
 
 ######################################
-# Eksik Değer Analizi
+# Analysis of Missing Value 
 ######################################
 
 
@@ -272,11 +272,11 @@ missing_values_table(df)
 
 
 
-# Bazı değişkenlerdeki boş değerler evin o özelliğe sahip olmadığını ifade etmektedir
+# Null values in some variables indicate that the house does not have that feature.
 no_cols = ["Alley","BsmtQual","BsmtCond","BsmtExposure","BsmtFinType1","BsmtFinType2","FireplaceQu",
            "GarageType","GarageFinish","GarageQual","GarageCond","PoolQC","Fence","MiscFeature"]
 
-# Kolonlardaki boşlukların "No" ifadesi ile doldurulması
+# Filling the spaces in the columns with the expression "No"
 for col in no_cols:
     df[col].fillna("No",inplace=True)
 
@@ -287,23 +287,22 @@ df.isnull().sum()
 
 
 
-# Bu fonsksiyon eksik değerlerin median veya mean ile doldurulmasını sağlar
+# This function fills in missing values with median or mean
 
 def quick_missing_imp(data, num_method="median", cat_length=20, target="SalePrice"):
-    variables_with_na = [col for col in data.columns if data[col].isnull().sum() > 0]  # Eksik değere sahip olan değişkenler listelenir
-
+    variables_with_na = [col for col in data.columns if data[col].isnull().sum() > 0]  # Variables with missing values are listed
     temp_target = data[target]
 
     print("# BEFORE")
-    print(data[variables_with_na].isnull().sum(), "\n\n")  # Uygulama öncesi değişkenlerin eksik değerlerinin sayısı
+    print(data[variables_with_na].isnull().sum(), "\n\n")  # Number of missing values of variables before implementation
 
-    # değişken object ve sınıf sayısı cat_lengthe eşit veya altındaysa boş değerleri mode ile doldur
+    # Fill nulls with mode if variable object and number of classes is less than or equal to cat_length
     data = data.apply(lambda x: x.fillna(x.mode()[0]) if (x.dtype == "O" and len(x.unique()) <= cat_length) else x, axis=0)
 
-    # num_method mean ise tipi object olmayan değişkenlerin boş değerleri ortalama ile dolduruluyor
+    # If num_method is mean, the null values of non-object type variables are filled with the mean
     if num_method == "mean":
         data = data.apply(lambda x: x.fillna(x.mean()) if x.dtype != "O" else x, axis=0)
-    # num_method median ise tipi object olmayan değişkenlerin boş değerleri ortalama ile dolduruluyor
+    # If num_method is median, null values of non-object type variables are filled with mean
     elif num_method == "median":
         data = data.apply(lambda x: x.fillna(x.median()) if x.dtype != "O" else x, axis=0)
 
@@ -322,10 +321,10 @@ df.isnull().sum()
 
 
 ######################################
-# Rare analizi yapınız ve rare encoder uygulayınız.
+# Rare analysis and rare encoder application
 ######################################
 
-# Kategorik kolonların dağılımının incelenmesi
+# Examining the distribution of categorical columns
 
 def rare_analyser(dataframe, target, cat_cols):
     for col in cat_cols:
@@ -337,7 +336,7 @@ def rare_analyser(dataframe, target, cat_cols):
 rare_analyser(df, "SalePrice", cat_cols)
 
 
-# Nadir sınıfların tespit edilmesi
+# Detection of rare classes
 def rare_encoder(dataframe, rare_perc):
     temp_df = dataframe.copy()
 
@@ -357,8 +356,8 @@ rare_encoder(df,0.01)
 
 
 
-####E##################################
-# yeni değişkenler oluşturunuz ve oluşturduğunuz yeni değişkenlerin başına 'NEW' ekleyiniz.
+######################################
+# creating new variables and adding 'NEW' to the beginning of the new variables created
 ######################################
 
 
@@ -418,13 +417,13 @@ df["NEW_GarageSold"] = df.YrSold - df.GarageYrBlt # 48
 
 drop_list = ["Street", "Alley", "LandContour", "Utilities", "LandSlope","Heating", "PoolQC", "MiscFeature","Neighborhood"]
 
-# drop_list'teki değişkenlerin düşürülmesi
+# dropping variables in drop_list
 df.drop(drop_list, axis=1, inplace=True)
 
 
 
 ##################
-# Label Encoding & One-Hot Encoding işlemlerini uygulayınız.
+# Implementation of Label Encoding & One-Hot Encoding
 ##################
 
 cat_cols, cat_but_car, num_cols = grab_col_names(df)
@@ -450,21 +449,21 @@ df = one_hot_encoder(df, cat_cols, drop_first=True)
 df.head()
 
 ##################################
-# MODELLEME
+# MODELLING
 ##################################
 
 ##################################
-# GÖREV 3: Model kurma
+# Mission 3: Model building
 ##################################
 
-#  Train ve Test verisini ayırınız. (SalePrice değişkeni boş olan değerler test verisidir.)
+#  Separation of Train and Test data. (Values with an empty Sale Price variable are test data.)
 train_df = df[df['SalePrice'].notnull()]
 test_df = df[df['SalePrice'].isnull()]
 
 y = train_df['SalePrice'] # np.log1p(df['SalePrice'])
 X = train_df.drop(["Id", "SalePrice"], axis=1)
 
-# Train verisi ile model kurup, model başarısını değerlendiriniz.
+# Establishing a model with train data and evaluating model success.
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=17)
 
 models = [('LR', LinearRegression()),
