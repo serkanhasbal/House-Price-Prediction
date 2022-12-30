@@ -3,12 +3,12 @@
 ################################################################
 
 
-# Görev
-# Elimizdeki veri seti üzerinden minimum hata ile ev fiyatlarını tahmin eden bir makine öğrenmesi modeli geliştiriniz ve kaggle yarışmasına tahminlerinizi yükleyiniz.
+# Mission
+# Develop a machine learning model that predicts house prices with minimum error from the data set.
 # https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview/evaluation
 
 
-# 1. GEREKLILIKLER
+# 1. REQUIREMENTS
 
 import numpy as np
 import pandas as pd
@@ -41,23 +41,23 @@ pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 
 ######################################
-# GÖREV 1 : Veri setine EDA işlemlerini uygulayınız.
+# TASK 1: Applying EDA operations to the data set.
 ######################################
 
-# 1. Genel Resim
-# 2. Kategorik Değişken Analizi (Analysis of Categorical Variables)
-# 3. Sayısal Değişken Analizi (Analysis of Numerical Variables)
-# 4. Hedef Değişken Analizi (Analysis of Target Variable)
-# 5. Korelasyon Analizi (Analysis of Correlation)
+# 1. General Overview
+# 2. Analysis of Categorical Variables
+# 3. Analysis of Numerical Variables
+# 4. Analysis of Target Variable
+# 5. Analysis of Correlation
 
 ################################################################
-# Adım 1: Train ve Test veri setlerini okutup birleştiriniz. Birleştirdiğiniz veri üzerinden ilerleyiniz.
+# Step 1: Reading and combining the Train and Test datasets. Proceeding through the combined data.
 ################################################################
 
-# train ve test setlerinin bir araya getirilmesi.
-train = pd.read_csv("Modül_6_Makine Öğrenmesi/datasets/train.csv")
+# combining the Train and Test datasets.
+train = pd.read_csv("datasets/train.csv")
 train.head()
-test = pd.read_csv("Modül_6_Makine Öğrenmesi/datasets/test.csv")
+test = pd.read_csv("datasets/test.csv")
 test.head()
 df = train.append(test,ignore_index=False).reset_index()
 df.head()
@@ -66,7 +66,7 @@ df.head()
 df.tail()
 
 ######################################
-# 1. Genel Resim
+# 1. Genel Overview
 ######################################
 
 def check_df(dataframe):
@@ -89,7 +89,7 @@ check_df(df)
 
 
 ##################################
-# NUMERİK VE KATEGORİK DEĞİŞKENLERİN YAKALANMASI
+# GRABBİNG OF NUMERICAL AND CATEGORY VARIABLES
 ##################################
 
 def grab_col_names(dataframe, cat_th=10, car_th=20):
@@ -134,7 +134,7 @@ cat_cols, cat_but_car, num_cols = grab_col_names(df)
 
 
 ######################################
-# 2. Kategorik Değişken Analizi (Analysis of Categorical Variables)
+# 2. Analysis of Categorical Variables
 ######################################
 
 def cat_summary(dataframe, col_name, plot=False):
@@ -152,7 +152,7 @@ for col in cat_cols:
 
 
 ######################################
-# 3. Sayısal Değişken Analizi (Analysis of Numerical Variables)
+# 3. Analysis of Numerical Variables
 ######################################
 
 def num_summary(dataframe, numerical_col, plot=False):
@@ -174,7 +174,7 @@ for col in num_cols:
 
 
 ######################################
-# 4. Hedef Değişken Analizi (Analysis of Target Variable)
+# 4. Analysis of Target Variable
 ######################################
 
 def target_summary_with_cat(dataframe, target, categorical_col):
@@ -187,13 +187,13 @@ for col in cat_cols:
 
 
 ######################################
-# 5. Korelasyon Analizi (Analysis of Correlation)
+# 5. Analysis of Correlation
 ######################################
 
 corr = df[num_cols].corr()
 corr
 
-# Korelasyonların gösterilmesi
+# Showing correlations
 sns.set(rc={'figure.figsize': (12, 12)})
 sns.heatmap(corr, cmap="RdBu")
 plt.show()
@@ -205,11 +205,11 @@ plt.show()
 
 
 ######################################
-# Görev 2 : Feature Engineering
+# Mission 2 : Feature Engineering
 ######################################
 
 ######################################
-# Aykırı Değer Analizi
+# Analysis of Outlier
 ######################################
 
 # Aykırı değerlerin baskılanması
