@@ -491,11 +491,11 @@ df['SalePrice'].std()
 
 
 ##################
-# BONUS : Log dönüşümü yaparak model kurunuz ve rmse sonuçlarını gözlemleyiniz.
-# Not: Log'un tersini (inverse) almayı unutmayınız.
+# BONUS: Build a model by doing log conversion and observing rmse results
+# Note: Do not forget to get the inverse of the log.
 ##################
 
-# Log dönüşümünün gerçekleştirilmesi
+# Performing log transformation
 
 
 train_df = df[df['SalePrice'].notnull()]
@@ -504,7 +504,7 @@ test_df = df[df['SalePrice'].isnull()]
 y = np.log1p(train_df['SalePrice'])
 X = train_df.drop(["Id", "SalePrice"], axis=1)
 
-# Verinin eğitim ve tet verisi olarak bölünmesi
+# Splitting data into training and test data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=17)
 
 
@@ -514,7 +514,7 @@ lgbm = LGBMRegressor().fit(X_train, y_train)
 y_pred = lgbm.predict(X_test)
 
 y_pred
-# Yapılan LOG dönüşümünün tersinin (inverse'nin) alınması
+# Getting the inverse of the LOG transformation made
 new_y = np.expm1(y_pred)
 new_y
 new_y_test = np.expm1(y_test)
@@ -528,7 +528,7 @@ np.sqrt(mean_squared_error(new_y_test, new_y))
 
 
 ##################
-# hiperparametre optimizasyonlarını gerçekleştiriniz.
+# performing hyperparameter optimizations
 ##################
 
 
@@ -557,7 +557,7 @@ rmse = np.mean(np.sqrt(-cross_val_score(final_model, X, y, cv=5, scoring="neg_me
 
 
 ################################################################
-# Değişkenlerin önem düzeyini belirten feature_importance fonksiyonunu kullanarak özelliklerin sıralamasını çizdiriniz.
+# Plot the order of features using the feature_importance function, which specifies the importance of the variables
 ################################################################
 
 # feature importance
@@ -583,8 +583,8 @@ plot_importance(model, X)
 
 
 ########################################
-# test dataframeindeki boş olan salePrice değişkenlerini tahminleyiniz ve
-# Kaggle sayfasına submit etmeye uygun halde bir dataframe oluşturunuz. (Id, SalePrice)
+# Estimate empty salePrice variables in the test dataframe, and
+# Creating a dataframe suitable for submitting to the Kaggle page. (Id, SalePrice)
 ########################################
 
 model = LGBMRegressor()
@@ -605,10 +605,10 @@ dfSubmission
 
 
 
-## Bağımlı değişkenin incelenmesi
+## Analysis of the dependent variable
 df["SalePrice"].hist(bins=100)
 plt.show()
 
-# Bağımlı değişkenin logaritmasının incelenmesi
+# Analysis the logarithm of the dependent variable
 np.log1p(df['SalePrice']).hist(bins=50)
 plt.show()
